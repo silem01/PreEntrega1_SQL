@@ -1,4 +1,6 @@
-CREATE DATABASE IF NOT EXISTS ventas_camisetas;
+-- Eliminamos las tablas si existen para evitar errores en la creación
+DROP DATABASE IF EXISTS ventas_camisetas;
+CREATE DATABASE ventas_camisetas;
 USE ventas_camisetas;
 
 -- Tabla Producto
@@ -22,8 +24,7 @@ CREATE TABLE cliente (
 CREATE TABLE venta (
     id_venta INT PRIMARY KEY AUTO_INCREMENT,
     id_cliente INT,
-    fecha DATE NOT NULL,
-    FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente)
+    fecha DATE NOT NULL
 );
 
 -- Tabla Detalle_Venta
@@ -32,7 +33,18 @@ CREATE TABLE detalle_venta (
     id_venta INT,
     id_producto INT,
     cantidad INT NOT NULL,
-    subtotal DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (id_venta) REFERENCES venta(id_venta),
-    FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
+    subtotal DECIMAL(10, 2) NOT NULL
 );
+
+-- Agregamos las claves foraneas usando ALTER TABLE
+ALTER TABLE venta 
+ADD CONSTRAINT fk_cliente_venta
+FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente);
+
+ALTER TABLE detalle_venta 
+ADD CONSTRAINT fk_venta_detalle
+FOREIGN KEY (id_venta) REFERENCES venta(id_venta);
+
+ALTER TABLE detalle_venta 
+ADD CONSTRAINT fk_producto_detalle
+FOREIGN KEY (id_producto) REFERENCES producto(id_producto);
